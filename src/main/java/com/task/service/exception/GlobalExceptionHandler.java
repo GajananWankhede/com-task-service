@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String,String> handleBusinessException(MethodArgumentNotValidException e){
+    public Map<String, String> handleBusinessException(MethodArgumentNotValidException e) {
 
         Map<String, String> errorMap = new HashMap<>();
 
@@ -24,7 +24,18 @@ public class GlobalExceptionHandler {
                 }
         );
 
-        return  errorMap;
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(TaskNotFoundException.class)
+    public Map<String, String> handleTaskNotFoundException(TaskNotFoundException e) {
+
+        Map<String, String> errorMap = new HashMap<>();
+
+        errorMap.put("ID", "Task Not Found");
+
+        return errorMap;
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,19 +27,14 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskAssembler taskAssembler;
 
-    public RequestResponse createTask(TaskDTO taskDTO){
+    public RequestResponse createTask(TaskDTO taskDTO) {
         RequestResponse response = new RequestResponse();
         TaskEntity taskEntity = taskAssembler.convertToEntity(taskDTO);
-        try {
+        taskRepository.save(taskEntity);
+        response.setStatus("P");
+        response.setMessage("Task created successfully");
+        response.setTaskEntities(Collections.singletonList(taskEntity));
 
-            taskRepository.save(taskEntity);
-            response.setStatus("P");
-            response.setMessage("Task created successfully");
-            response.setTaskEntities(Collections.singletonList(taskEntity));
-        } catch(Exception e){
-            response.setStatus("F");
-            response.setMessage("Task is not created, please contanct support team.");
-        }
         return response;
     }
 
@@ -55,8 +51,8 @@ public class TaskServiceImpl implements TaskService {
     public RequestResponse getAllTaskByPages(int pageNo, int pageSize, String sortBy, String sortColumn) {
 
         Sort sort = sortColumn.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                :Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         List<TaskEntity> tasks = taskRepository.findAll(PageRequest.of(0, pageSize)).toList();
 
@@ -64,7 +60,6 @@ public class TaskServiceImpl implements TaskService {
         response.setStatus("P");
         response.setMessage("Successfully received all tasks, Here is the complete list");
         response.setTaskEntities(tasks);
-
 
 
         return response;
@@ -77,7 +72,7 @@ public class TaskServiceImpl implements TaskService {
         Optional<TaskEntity> optionalTask = taskRepository.findById(id);
 
         if (!optionalTask.isPresent()) {
-            response.setStatus("P");
+            response.setStatus("F");
             response.setMessage("Task Not Found with id : " + id);
             return response;
         }
@@ -88,26 +83,36 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    public RequestResponse updateTaskById(TaskEntity taskEntity, Long id) {
+    public RequestResponse updateTaskById(TaskEntity taskEntity, Long id) throws RuntimeException {
         RequestResponse response = new RequestResponse();
         taskRepository.save(taskEntity);
 
-        if(! taskRepository.existsById(id)){
-            throw new TaskNotFoundException("Task Not Found with id  "+id);
-        }
-        else{
+        if (!taskRepository.existsById(id)) {
+            response.setStatus("F");
+            response.setMessage("Task given below with id not found");
+            throw new TaskNotFoundException("Task Not Found with id  " + id);
+
+        } else {
             response.setStatus("P");
             response.setMessage("Task given below with id : " + taskEntity.getId() + " updated successfully");
             response.setTaskEntities(Collections.singletonList(taskEntity));
         }
-
-
         return response;
     }
 
-    public void deleteTaskById(Long id) {
-        if(!taskRepository.existsById(id)){
-            throw new TaskNotFoundException("Task Not Found with ID "+id);
+    public RequestResponse deleteTaskById(Long id) {
+        RequestResponse response = new RequestResponse();
+
+        taskRepository.deleteById(id);
+        if (!taskRepository.existsById(id)) {
+            response.setStatus("F");
+            response.setMessage("Task Not Found with Id  " + id);
+
+        } else {
+            response.setStatus("P");
+            response.setMessage("Task deleted successfully with Id " + id);
+
         }
+        return response;
     }
 }

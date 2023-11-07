@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "task_entity" )
+@Table(name = "task_entity")
 public class TaskEntity {
 
     @Id
@@ -32,7 +32,7 @@ public class TaskEntity {
 
     @Column(name = "task_dueDate")
     @NotNull(message = "due Date should not be blank")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dueDate;
 
     @Column(name = "task_status")

@@ -11,14 +11,15 @@ public interface TaskService {
 
     RequestResponse getAllTask();
 
-    public RequestResponse getAllTaskByPages(int pageNo, int pageSize, String sortBy,String sortColumn);
+    public RequestResponse getAllTaskByPages(int pageNo, int pageSize, String sortBy, String sortColumn);
 
 
     public RequestResponse getTaskById(Long id);
 
 
     public RequestResponse updateTaskById(TaskEntity taskEntity, Long id);
-    public void deleteTaskById(Long id);
+
+    public RequestResponse deleteTaskById(Long id);
 
 
 }

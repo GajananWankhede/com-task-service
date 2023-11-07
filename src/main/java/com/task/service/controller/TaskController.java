@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 
-
 //Swagger-UI --->     http://localhost:8051/swagger-ui.html
-
 
 
 @RestController
@@ -29,7 +27,7 @@ public class TaskController {
     //Creare a new task
 
     @PostMapping("/create-task")
-    public ResponseEntity<RequestResponse> createTask(@RequestBody @Valid TaskDTO taskDTO){
+    public ResponseEntity<RequestResponse> createTask(@RequestBody @Valid TaskDTO taskDTO) {
         RequestResponse requestResponse = taskService.createTask(taskDTO);
         return new ResponseEntity<>(requestResponse, HttpStatus.CREATED);
     }
@@ -42,25 +40,23 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-//pageNo, int pageSize, String sortBy, String sortColumn
+    //pageNo, int pageSize, String sortBy, String sortColumn
     @GetMapping("allTaskByPage")
-    public ResponseEntity<RequestResponse> getAllTaskByPage(@RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
-                                                            @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE,required = false) int pageSize,
-                                                            @RequestParam(value = "sortBy",defaultValue = AppConstants.DEFAULT_SORT_BY,required = false) String sortBy,
-                                                            @RequestParam(value = "sortBy",defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,required = false) String sortColumn
-                                                            ) {
-        RequestResponse response = taskService.getAllTaskByPages(pageNo,pageSize,sortBy,sortColumn);
+    public ResponseEntity<RequestResponse> getAllTaskByPage(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+                                                            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortColumn
+    ) {
+        RequestResponse response = taskService.getAllTaskByPages(pageNo, pageSize, sortBy, sortColumn);
         return ResponseEntity.ok(response);
     }
 
     //Retrive task by ID
 
     @GetMapping("/getTaskById/{id}")
-    public ResponseEntity<RequestResponse> getTaskById(@PathVariable Long id)
-    {
+    public ResponseEntity<RequestResponse> getTaskById(@PathVariable Long id) {
         RequestResponse response = taskService.getTaskById(id);
-        if (response.getTaskEntities() == null)
-        {
+        if (response.getTaskEntities() == null) {
             return ResponseEntity.ok(response);
         }
 
@@ -71,16 +67,14 @@ public class TaskController {
 
 
     @PutMapping("/updateTaskById/{id}")
-    public ResponseEntity<String> updateUserById(@RequestBody TaskEntity updatedUser, @PathVariable Long id){
-        try{
-            taskService.updateTaskById(updatedUser,id);
+    public ResponseEntity<String> updateUserById(@RequestBody TaskEntity updatedUser, @PathVariable Long id) {
+        try {
+            taskService.updateTaskById(updatedUser, id);
             return ResponseEntity.status(HttpStatus.CREATED).body("Task with id " + id + " updated successfully");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 
 
     //Delete a task

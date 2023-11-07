@@ -18,8 +18,16 @@ import java.util.Date;
 public class TaskDTO {
 
     private Long id;
+    @NotNull(message = "title Should not be blank")
     private String title;
+
+    @NotNull(message = "description should not be blank")
     private String description;
+
+    @NotNull(message = "due Date should not be blank")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dueDate;
+
+    @NotNull(message = "status should not be blank")
     private Status status;
 }
